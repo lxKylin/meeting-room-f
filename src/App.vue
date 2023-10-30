@@ -1,9 +1,7 @@
 <template>
-  <div id="app">
-    <a-config-provider :locale="locale">
-      <router-view />
-    </a-config-provider>
-  </div>
+  <a-config-provider :locale="locale">
+    <router-view />
+  </a-config-provider>
 </template>
 
 <script lang="ts" setup>
