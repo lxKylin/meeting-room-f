@@ -23,7 +23,7 @@ const back = () => {
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-left: -95px;
+  margin-left: -45px;
   margin-top: -121px;
   text-align: center;
 }
