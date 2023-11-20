@@ -39,6 +39,7 @@
         "allow": ["warn", "error"]
       }
     ],
-    "no-debugger": "warn" //提交时不允许有debugger
+    "no-debugger": "warn", //提交时不允许有debugger
+    "vue/comment-directive": "off"
   }
 }

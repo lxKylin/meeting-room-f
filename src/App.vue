@@ -9,3 +9,15 @@ import zhCN from '@arco-design/web-vue/es/locale/lang/zh-cn'
 
 const locale = zhCN
 </script>
+<style lang="less">
+#app {
+  flex: auto;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-width: 1250px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+</style>

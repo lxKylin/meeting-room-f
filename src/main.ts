@@ -1,6 +1,10 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
+
+// css初始化
+import 'normalize.css'
+import './assets/css/index.less'
+
 import ArcoVue from '@arco-design/web-vue'
 // 额外引入图标库
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
