@@ -27,7 +27,8 @@ request.interceptors.response.use(
     }
   },
   (error) => {
-    return Promise.reject(error)
+    const data: any = error.response.data
+    return Promise.reject(data)
   }
 )
 

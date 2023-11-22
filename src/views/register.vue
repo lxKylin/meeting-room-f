@@ -3,6 +3,7 @@
     <div class="register__main">
       <h1 class="register__main__title">会议室预定系统</h1>
       <a-form
+        ref="formRef"
         class="register__main__form"
         :model="form"
         :rules="rules"
@@ -22,9 +23,9 @@
             allow-clear
           />
         </a-form-item>
-        <a-form-item field="password1" label="密码">
+        <a-form-item field="password" label="密码">
           <a-input-password
-            v-model="form.password1"
+            v-model="form.password"
             placeholder="请输入密码"
             allow-clear
           />
@@ -45,34 +46,52 @@
             placeholder="请输入验证码"
             allow-clear
           />
-          <a-button class="ml20" type="primary">发送验证码</a-button>
+          <a-button
+            v-if="!sms.disabled"
+            class="ml20"
+            type="primary"
+            @click="sendCode"
+          >
+            发送验证码
+          </a-button>
+          <a-button v-else class="ml20" type="secondary" disabled>
+            {{ sms.count }} 秒后重新发送
+          </a-button>
         </a-form-item>
       </a-form>
       <div class="register__main__footer">
         <div class="register__main__footer--top">
           <span @click="toLoginPage">已有账号？去登录</span>
         </div>
-        <a-button type="primary">注册</a-button>
+        <a-button type="primary" @click="userRegister">注册</a-button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { PAGE_URL_LOGIN } from '@/constant/page-url-constane'
+import { PAGE_URL_LOGIN } from '@/constant/page-url-constants'
 
+import { registerCaptcha, register } from '@/services/user-service'
+
+let message = ref<any>(null)
+onMounted(() => {
+  message.value =
+    getCurrentInstance()?.appContext.config.globalProperties.$message
+})
+
+const formRef = ref()
 const form = ref({
   username: '',
   nickName: '',
-  password1: '',
+  password: '',
   password2: '',
   email: '',
   captcha: ''
 })
-
 const rules = {
   username: [
     {
@@ -86,7 +105,7 @@ const rules = {
       message: '请输入昵称'
     }
   ],
-  password1: [
+  password: [
     {
       required: true,
       message: '请输入密码'
@@ -96,6 +115,15 @@ const rules = {
     {
       required: true,
       message: '请输入密码'
+    },
+    {
+      validator: (value: any, cb: any) => {
+        if (value !== form.value.password) {
+          cb('两次密码不一致')
+        } else {
+          cb()
+        }
+      }
     }
   ],
   email: [
@@ -116,16 +144,71 @@ const router = useRouter()
 const toLoginPage = () => {
   router.push(PAGE_URL_LOGIN)
 }
+
+// 验证码计时器
+const sms = reactive({
+  disabled: false,
+  total: 60,
+  count: 0
+})
+// 计时器处理器
+const timerHandler = () => {
+  sms.count = sms.total
+  sms.disabled = true
+
+  let timer = setInterval(() => {
+    if (sms.count > 1 && sms.count <= sms.total) {
+      sms.count--
+    } else {
+      sms.disabled = false
+      clearInterval(timer)
+    }
+  }, 1000)
+}
+const sendCode = () => {
+  // 发送验证码前效验邮箱
+  formRef.value.validateField('email', (err: any) => {
+    if (!err) {
+      registerCaptcha(form.value.email)
+        .then(() => {
+          message.value.success('验证码发送成功')
+          timerHandler()
+        })
+        .catch((err) => {
+          message.value.error(err.message || '系统繁忙，请稍后再试')
+        })
+    }
+  })
+}
+
+const userRegister = () => {
+  formRef.value.validate((valid: any) => {
+    if (!valid) {
+      delete form.value.password2
+      register(form.value)
+        .then(() => {
+          message.value.success('注册成功')
+          router.push(PAGE_URL_LOGIN)
+        })
+        .catch((err) => {
+          message.value.error(err.message || '系统繁忙，请稍后再试')
+        })
+    }
+  })
+}
 </script>
 
 <style lang="less" scoped>
 .register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   &__main {
     width: 400px;
     margin: 0 auto;
-    margin-top: 200px;
+    margin-top: 100px;
     &__title {
       text-align: center;
       margin-bottom: 50px;

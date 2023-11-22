@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
-import * as pageUrl from '@/constant/page-url-constane'
+import * as pageUrl from '@/constant/page-url-constants'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,6 +24,11 @@ const routes: RouteRecordRaw[] = [
     path: pageUrl.PAGE_URL_RESET_PASSWORD,
     name: pageUrl.PAGE_URL_RESET_PASSWORD,
     component: () => import('@/views/reset-pwd.vue')
+  },
+  {
+    path: pageUrl.PAGE_URL_USER_PROFILE,
+    name: pageUrl.PAGE_URL_USER_PROFILE,
+    component: () => import('@/views/user-profile.vue')
   },
   {
     path: '/:pathMatch(.*)*',

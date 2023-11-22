@@ -3,6 +3,7 @@
     <div class="login__main">
       <h1 class="login__main__title">会议室预定系统</h1>
       <a-form
+        ref="formRef"
         class="login__main__form"
         :model="form"
         :rules="rules"
@@ -28,21 +29,25 @@
           <span @click="toResetPwdPage">忘记密码</span>
           <span @click="toRegisterPage">注册</span>
         </div>
-        <a-button type="primary">登录</a-button>
+        <a-button type="primary" @click="login">登录</a-button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
+import { ValidatedError } from '@arco-design/web-vue'
 
 import {
   PAGE_URL_REGISTER,
   PAGE_URL_RESET_PASSWORD
-} from '@/constant/page-url-constane'
+} from '@/constant/page-url-constants'
+import { userLogin } from '@/services/user-service'
+import localCache from '@/utils/cache'
 
+const formRef = ref()
 const form = ref({
   username: '',
   password: ''
@@ -71,6 +76,34 @@ const toRegisterPage = () => {
 }
 const toResetPwdPage = () => {
   router.push(PAGE_URL_RESET_PASSWORD)
+}
+
+let message = ref<any>(null)
+onMounted(() => {
+  message.value =
+    getCurrentInstance()?.appContext.config.globalProperties.$message
+})
+
+const login = () => {
+  formRef.value.validate(
+    (valid: undefined | Record<string, ValidatedError>) => {
+      if (!valid) {
+        userLogin(form.value.username, form.value.password)
+          .then((res) => {
+            if (res.status === 200) {
+              message.value.success('登录成功')
+            }
+            const data = res.data
+            localCache.setCache('accessToken', data.accessToken)
+            localCache.setCache('refreshToken', data.refreshToken)
+            localCache.setCache('userInfo', data.userInfo)
+          })
+          .catch((err) => {
+            message.value.error(err.message || '登录失败')
+          })
+      }
+    }
+  )
 }
 </script>
 
@@ -108,3 +141,4 @@ const toResetPwdPage = () => {
   }
 }
 </style>
+@/services/user-service
