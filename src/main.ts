@@ -10,6 +10,12 @@ import ArcoVue from '@arco-design/web-vue'
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import '@arco-design/web-vue/dist/arco.css'
 
+import { Icon } from '@arco-design/web-vue'
+
+const IconFont = Icon.addFromIconFontCn({
+  src: 'https://at.alicdn.com/t/font_180975_ue66sq60vyd.js'
+})
+
 import router from './router'
 import store from './store'
 
@@ -20,5 +26,8 @@ app.use(ArcoVueIcon)
 
 app.use(router)
 app.use(store)
+
+// app.component('PageSearch', PageSearch)
+app.component('IconFont', IconFont)
 
 app.mount('#app')
