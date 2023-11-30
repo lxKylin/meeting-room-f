@@ -29,7 +29,7 @@
           <span @click="toResetPwdPage">忘记密码</span>
           <span @click="toRegisterPage">注册</span>
         </div>
-        <a-button type="primary" @click="login">登录</a-button>
+        <a-button type="primary" @click="doLogin">登录</a-button>
       </div>
     </div>
   </div>
@@ -38,13 +38,14 @@
 <script lang="ts" setup>
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
-import { ValidatedError } from '@arco-design/web-vue'
+import type { ValidatedError } from '@arco-design/web-vue'
 
 import {
   PAGE_URL_REGISTER,
-  PAGE_URL_RESET_PASSWORD
+  PAGE_URL_RESET_PASSWORD,
+  PAGE_URL_MEETING_ROOM
 } from '@/constant/page-url-constants'
-import { userLogin } from '@/services/user-service'
+import { login } from '@/services/user-service'
 import localCache from '@/utils/cache'
 
 const formRef = ref()
@@ -52,7 +53,6 @@ const form = ref({
   username: '',
   password: ''
 })
-
 const rules = ref({
   username: [
     {
@@ -84,19 +84,20 @@ onMounted(() => {
     getCurrentInstance()?.appContext.config.globalProperties.$message
 })
 
-const login = () => {
+const doLogin = () => {
   formRef.value.validate(
     (valid: undefined | Record<string, ValidatedError>) => {
       if (!valid) {
-        userLogin(form.value.username, form.value.password)
+        login(form.value.username, form.value.password)
           .then((res) => {
-            if (res.status === 200) {
-              message.value.success('登录成功')
-            }
+            message.value.success('登录成功')
             const data = res.data
             localCache.setCache('accessToken', data.accessToken)
             localCache.setCache('refreshToken', data.refreshToken)
             localCache.setCache('userInfo', data.userInfo)
+            setTimeout(() => {
+              router.push(PAGE_URL_MEETING_ROOM)
+            }, 1000)
           })
           .catch((err) => {
             message.value.error(err.message || '登录失败')
@@ -109,11 +110,11 @@ const login = () => {
 
 <style lang="less" scoped>
 .login {
+  width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
   background: url('@/assets/img/login-bg.svg');
   &__main {
     width: 400px;
@@ -141,4 +142,3 @@ const login = () => {
   }
 }
 </style>
-@/services/user-service

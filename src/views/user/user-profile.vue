@@ -1,10 +1,22 @@
 <template>
   <div class="user-profile">
     <div class="user-profile__main">
-      <h1 class="user-profile__main__title">会议室预定系统</h1>
+      <h1 class="user-profile__main__title">会议室预定系统个人信息</h1>
       <a-form :model="form" :rules="rules" auto-label-width>
+        <a-form-item field="nickName" label="昵称">
+          <a-input
+            v-model="form.nickName"
+            placeholder="请输入昵称"
+            allow-clear
+          />
+        </a-form-item>
         <a-form-item field="email" label="邮箱">
-          <a-input v-model="form.email" placeholder="请输入邮箱" allow-clear />
+          <a-input
+            v-model="form.email"
+            placeholder="请输入邮箱"
+            disabled
+            allow-clear
+          />
         </a-form-item>
         <a-form-item field="captcha" label="验证码">
           <a-input
@@ -12,18 +24,26 @@
             placeholder="请输入验证码"
             allow-clear
           />
-          <a-button class="ml20" type="primary">发送验证码</a-button>
+          <a-button class="ml20" type="primary" @click="handleSendCaptcha">
+            发送验证码
+          </a-button>
         </a-form-item>
       </a-form>
       <div class="user-profile__main__footer">
-        <a-button type="primary">修改</a-button>
+        <a-button type="primary" @click="handleUpdateUserInfo">修改</a-button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { Message } from '@arco-design/web-vue'
+import {
+  updateUserInfo,
+  updateUserInfoCaptcha,
+  getUserInfo
+} from '@/services/user-service'
 
 const form = ref({
   nickName: '',
@@ -50,6 +70,33 @@ const rules = {
       message: '请输入验证码'
     }
   ]
+}
+
+onMounted(() => {
+  getUserInfo().then((res) => {
+    form.value.nickName = res.data.nickName
+    form.value.email = res.data.email
+  })
+})
+
+const handleUpdateUserInfo = () => {
+  updateUserInfo(form.value)
+    .then((res) => {
+      Message.success(res.data || '修改成功')
+    })
+    .catch((err) => {
+      Message.error(err.msg || '修改失败')
+    })
+}
+
+const handleSendCaptcha = () => {
+  updateUserInfoCaptcha()
+    .then(() => {
+      Message.success('验证码发送成功')
+    })
+    .catch((err) => {
+      Message.error(err.msg || '验证码发送失败')
+    })
 }
 </script>
 
