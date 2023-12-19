@@ -55,9 +55,8 @@ const nickName = ref<string>('')
 const avatarUrl = ref<string>('')
 onMounted(() => {
   getUserInfo().then((res) => {
-    const { nickName, headPic } = res.data
-    nickName.value = nickName
-    store.setHeadPic(headPic)
+    nickName.value = res.data.nickName
+    store.setHeadPic(res.data.headPic)
     avatarUrl.value = store.headPic
   })
 })
