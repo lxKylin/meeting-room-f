@@ -4,6 +4,7 @@ import type { Register, UpdatePassword } from '@/types/user.type'
 
 import {
   DATA_URL_LOGIN,
+  DATA_URL_ADMIN_LOGIN,
   DATA_URL_REGISTER,
   DATA_URL_REGISTER_CAPTCHA,
   DATA_URL_UPDATE_PASSWORD,
@@ -19,9 +20,10 @@ import {
  * @param password
  * @returns
  */
-export const login = (username: string, password: string) => {
+export const login = (username: string, password: string, isAdmin = false) => {
+  const url = isAdmin ? DATA_URL_ADMIN_LOGIN : DATA_URL_LOGIN
   // 表示请求的响应数据的类型是 any，而服务器的响应类型是 ServerResponse。
-  return request.post<any, ServerResponse>(DATA_URL_LOGIN, {
+  return request.post<any, ServerResponse>(url, {
     username,
     password
   })

@@ -42,18 +42,23 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import localCache from '@/utils/cache'
+import { useStore } from '@/store'
 import {
   PAGE_URL_USER_PROFILE,
   PAGE_URL_LOGIN
 } from '@/constant/page-url-constants'
 import { getUserInfo } from '@/services/user-service'
 
+const store = useStore()
+
 const nickName = ref<string>('')
 const avatarUrl = ref<string>('')
 onMounted(() => {
   getUserInfo().then((res) => {
-    nickName.value = res.data.nickName
-    avatarUrl.value = res.data.headPic
+    const { nickName, headPic } = res.data
+    nickName.value = nickName
+    store.setHeadPic(headPic)
+    avatarUrl.value = store.headPic
   })
 })
 const router = useRouter()

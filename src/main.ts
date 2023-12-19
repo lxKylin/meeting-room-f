@@ -12,12 +12,15 @@ import '@arco-design/web-vue/dist/arco.css'
 
 import { Icon } from '@arco-design/web-vue'
 
+import { createPinia } from 'pinia'
+
 const IconFont = Icon.addFromIconFontCn({
   src: 'https://at.alicdn.com/t/font_180975_ue66sq60vyd.js'
 })
 
 import router from './router'
-import store from './store'
+
+const store = createPinia()
 
 const app = createApp(App)
 

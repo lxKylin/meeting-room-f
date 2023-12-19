@@ -1,7 +1,9 @@
 <template>
   <div class="login">
     <div class="login__main">
-      <h1 class="login__main__title">会议室预定系统</h1>
+      <h1 class="login__main__title">
+        {{ `会议室预定系统${isAdmin ? '-管理端' : ''}` }}
+      </h1>
       <a-form
         ref="formRef"
         class="login__main__form"
@@ -37,16 +39,22 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, getCurrentInstance } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import type { ValidatedError } from '@arco-design/web-vue'
 
 import {
   PAGE_URL_REGISTER,
   PAGE_URL_RESET_PASSWORD,
-  PAGE_URL_MEETING_ROOM
+  PAGE_URL_MEETING_ROOM,
+  PAGE_URL_ADMIN_LOGIN
 } from '@/constant/page-url-constants'
 import { login } from '@/services/user-service'
 import localCache from '@/utils/cache'
+
+const router = useRouter()
+const route = useRoute()
+
+const isAdmin = route.path === PAGE_URL_ADMIN_LOGIN
 
 const formRef = ref()
 const form = ref({
@@ -70,7 +78,6 @@ const rules = ref({
   ]
 })
 
-const router = useRouter()
 const toRegisterPage = () => {
   router.push(PAGE_URL_REGISTER)
 }
@@ -88,7 +95,7 @@ const doLogin = () => {
   formRef.value.validate(
     (valid: undefined | Record<string, ValidatedError>) => {
       if (!valid) {
-        login(form.value.username, form.value.password)
+        login(form.value.username, form.value.password, isAdmin)
           .then((res) => {
             message.value.success('登录成功')
             const data = res.data

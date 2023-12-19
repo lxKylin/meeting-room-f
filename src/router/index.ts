@@ -34,6 +34,14 @@ const routes: RouteRecordRaw[] = [
           title: '会议室预定历史'
         },
         component: () => import('@/views/meeting-room/history/room-history.vue')
+      },
+      {
+        path: PAGE_URL.PAGE_URL_USER_PROFILE,
+        name: PAGE_URL.PAGE_URL_USER_PROFILE,
+        meta: {
+          title: '个人信息'
+        },
+        component: () => import('@/views/user/user-profile.vue')
       }
     ]
   },
@@ -42,6 +50,14 @@ const routes: RouteRecordRaw[] = [
     name: PAGE_URL.PAGE_URL_LOGIN,
     meta: {
       title: '登录'
+    },
+    component: () => import('@/views/user/login.vue')
+  },
+  {
+    path: PAGE_URL.PAGE_URL_ADMIN_LOGIN,
+    name: PAGE_URL.PAGE_URL_ADMIN_LOGIN,
+    meta: {
+      title: '管理员登录'
     },
     component: () => import('@/views/user/login.vue')
   },
@@ -61,14 +77,7 @@ const routes: RouteRecordRaw[] = [
     },
     component: () => import('@/views/user/reset-pwd.vue')
   },
-  {
-    path: PAGE_URL.PAGE_URL_USER_PROFILE,
-    name: PAGE_URL.PAGE_URL_USER_PROFILE,
-    meta: {
-      title: '个人信息'
-    },
-    component: () => import('@/views/user/user-profile.vue')
-  },
+
   {
     path: '/:pathMatch(.*)*',
     meta: {
