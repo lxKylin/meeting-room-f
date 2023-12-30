@@ -45,7 +45,8 @@ import localCache from '@/utils/cache'
 import { useStore } from '@/store'
 import {
   PAGE_URL_USER_PROFILE,
-  PAGE_URL_LOGIN
+  PAGE_URL_LOGIN,
+  PAGE_URL_ADMIN_LOGIN
 } from '@/constant/page-url-constants'
 import { getUserInfo } from '@/services/user-service'
 
@@ -68,7 +69,7 @@ const doptionList = reactive([
     title: '个人信息'
   },
   {
-    path: PAGE_URL_LOGIN,
+    path: store.isAdmin ? PAGE_URL_ADMIN_LOGIN : PAGE_URL_LOGIN,
     icon: 'icon-export',
     title: '退出登录'
   }

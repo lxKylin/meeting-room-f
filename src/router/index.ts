@@ -46,6 +46,50 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM,
+    name: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM,
+    redirect: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_LIST,
+    meta: {
+      title: '管理员后台'
+    },
+    component: () => import('@/views/layout.vue'),
+    children: [
+      {
+        path: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_LIST,
+        name: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_LIST,
+        meta: {
+          title: '会议室管理'
+        },
+        component: () => import('@/views/admin/room-list/room-list.vue')
+      },
+      {
+        path: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_BOOK,
+        name: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_BOOK,
+        meta: {
+          title: '预定管理'
+        },
+        component: () => import('@/views/admin/room-booking/room-booking.vue')
+      },
+      {
+        path: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_USER,
+        name: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_USER,
+        meta: {
+          title: '用户管理'
+        },
+        component: () => import('@/views/admin/room-user/room-user.vue')
+      },
+      {
+        path: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_STATISTICS,
+        name: PAGE_URL.PAGE_URL_ADMIN_MEETING_ROOM_STATISTICS,
+        meta: {
+          title: '统计'
+        },
+        component: () =>
+          import('@/views/admin/room-statistics/room-statistics.vue')
+      }
+    ]
+  },
+  {
     path: PAGE_URL.PAGE_URL_LOGIN,
     name: PAGE_URL.PAGE_URL_LOGIN,
     meta: {

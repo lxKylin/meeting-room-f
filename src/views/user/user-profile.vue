@@ -107,26 +107,29 @@ const form = reactive({
   captcha: ''
 })
 
-const rules = {
+const rules = ref({
   nickName: [
     {
       required: true,
-      message: '请输入昵称'
+      message: '请输入昵称',
+      validate: 'blur'
     }
   ],
   email: [
     {
       type: 'email',
-      required: true
+      required: true,
+      validate: 'blur'
     }
   ],
   captcha: [
     {
       required: true,
-      message: '请输入验证码'
+      message: '请输入验证码',
+      validate: 'blur'
     }
   ]
-}
+})
 
 const file = ref<any>({})
 onMounted(() => {

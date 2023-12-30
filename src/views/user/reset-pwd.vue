@@ -75,35 +75,40 @@ const form = ref<UpdatePassword>({
   password2: ''
 })
 
-const rules = {
+const rules = ref({
   username: [
     {
       required: true,
-      message: '请输入验证码'
+      message: '请输入验证码',
+      validate: 'blur'
     }
   ],
   email: [
     {
       type: 'email',
-      required: true
+      required: true,
+      validate: 'blur'
     }
   ],
   captcha: [
     {
       required: true,
-      message: '请输入验证码'
+      message: '请输入验证码',
+      validate: 'blur'
     }
   ],
   password: [
     {
       required: true,
-      message: '请输入密码'
+      message: '请输入密码',
+      validate: 'blur'
     }
   ],
   password2: [
     {
       required: true,
-      message: '请输入密码'
+      message: '请输入密码',
+      validate: 'blur'
     },
     {
       validator: (value: string, cb: any) => {
@@ -115,7 +120,7 @@ const rules = {
       }
     }
   ]
-}
+})
 
 const router = useRouter()
 const resetPwd = () => {

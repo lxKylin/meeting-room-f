@@ -46,6 +46,7 @@ import {
   PAGE_URL_REGISTER,
   PAGE_URL_RESET_PASSWORD,
   PAGE_URL_MEETING_ROOM,
+  PAGE_URL_ADMIN_MEETING_ROOM_LIST,
   PAGE_URL_ADMIN_LOGIN
 } from '@/constant/page-url-constants'
 import { login } from '@/services/user-service'
@@ -55,6 +56,8 @@ const router = useRouter()
 const route = useRoute()
 
 const isAdmin = route.path === PAGE_URL_ADMIN_LOGIN
+
+localCache.setCache('isAdmin', isAdmin)
 
 const formRef = ref()
 const form = ref({
@@ -85,6 +88,7 @@ const toResetPwdPage = () => {
   router.push(PAGE_URL_RESET_PASSWORD)
 }
 
+// 使用全局的 message 组件
 let message = ref<any>(null)
 onMounted(() => {
   message.value =
@@ -103,7 +107,11 @@ const doLogin = () => {
             localCache.setCache('refreshToken', data.refreshToken)
             localCache.setCache('userInfo', data.userInfo)
             setTimeout(() => {
-              router.push(PAGE_URL_MEETING_ROOM)
+              router.push(
+                isAdmin
+                  ? PAGE_URL_ADMIN_MEETING_ROOM_LIST
+                  : PAGE_URL_MEETING_ROOM
+              )
             }, 1000)
           })
           .catch((err) => {

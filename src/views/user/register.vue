@@ -79,6 +79,7 @@ import { registerCaptcha, register } from '@/services/user-service'
 
 import { Register } from '@/types/user.type'
 
+// 使用全局的 message 组件
 let message = ref<any>(null)
 onMounted(() => {
   message.value =
@@ -94,7 +95,7 @@ const form = ref<Register>({
   email: '',
   captcha: ''
 })
-const rules = {
+const rules = ref({
   username: [
     {
       required: true,
@@ -140,7 +141,7 @@ const rules = {
       message: '请输入验证码'
     }
   ]
-}
+})
 
 const router = useRouter()
 const toLoginPage = () => {
