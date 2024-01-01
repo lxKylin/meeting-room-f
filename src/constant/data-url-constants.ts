@@ -12,3 +12,5 @@ export const DATA_URL_UPDATE_PASSWORD_CAPTCHA = `${API_BASE}/captcha/update_pass
 export const DATA_URL_UPDATE_USER_INFO_CAPTCHA = `${API_BASE}/captcha/update_userInfo`
 
 export const DATA_URL_REFRESH_TOKEN = `${API_BASE}/user/refresh`
+
+export const DATA_URL_USER_LIST = `${API_BASE}/user/list`

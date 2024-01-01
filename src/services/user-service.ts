@@ -11,7 +11,8 @@ import {
   DATA_URL_UPDATE_USER_INFO_CAPTCHA,
   DATA_URL_REFRESH_TOKEN,
   DATA_URL_GET_USER_INFO,
-  DATA_URL_UPDATE_USER_INFO
+  DATA_URL_UPDATE_USER_INFO,
+  DATA_URL_USER_LIST
 } from '@/constant/data-url-constants'
 
 /**
@@ -93,4 +94,10 @@ export const getUserInfo = () => {
  */
 export const updateUserInfo = (userInfo: any) => {
   return request.post<any, ServerResponse>(DATA_URL_UPDATE_USER_INFO, userInfo)
+}
+
+export const getUserList = (info: any) => {
+  return request.get<any, ServerResponse>(DATA_URL_USER_LIST, {
+    params: { info }
+  })
 }

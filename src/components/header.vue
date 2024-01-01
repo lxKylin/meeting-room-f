@@ -1,7 +1,9 @@
 <template>
   <div class="header">
     <header class="header__wrapper">
-      <div class="header__wrapper__logo">会议室</div>
+      <div class="header__wrapper__logo">
+        {{ isAdmin ? '会议室预定系统后台' : '会议室预定系统' }}
+      </div>
       <div class="header__wrapper__menu">
         <div class="header__wrapper__menu-item">Home</div>
         <div class="header__wrapper__menu-item">About</div>
@@ -52,11 +54,13 @@ import { getUserInfo } from '@/services/user-service'
 
 const store = useStore()
 
+const isAdmin = localCache.getCache('isAdmin')
+
 const nickName = ref<string>('')
 const avatarUrl = ref<string>('')
 onMounted(() => {
   getUserInfo().then((res) => {
-    nickName.value = res.data.nickName
+    nickName.value = res.data.nickName || ''
     store.setHeadPic(res.data.headPic)
     avatarUrl.value = store.headPic
   })
@@ -69,7 +73,7 @@ const doptionList = reactive([
     title: '个人信息'
   },
   {
-    path: store.isAdmin ? PAGE_URL_ADMIN_LOGIN : PAGE_URL_LOGIN,
+    path: isAdmin ? PAGE_URL_ADMIN_LOGIN : PAGE_URL_LOGIN,
     icon: 'icon-export',
     title: '退出登录'
   }
