@@ -2,11 +2,11 @@
   <div class="user-profile">
     <div class="user-profile__main">
       <h1 class="user-profile__main__title">会议室预定系统个人信息</h1>
-      <a-form :model="form" :rules="rules" auto-label-width>
-        <a-form-item field="headPic" label="头像">
-          <a-upload
+      <el-form :model="form" :rules="rules" auto-label-width>
+        <el-form-item field="headPic" label="头像">
+          <el-upload
             action="/api/upload/picture"
-            draggable
+            drag
             :file-list="file ? [file] : []"
             :show-file-list="false"
             name="picture"
@@ -15,73 +15,46 @@
             @success="onSuccess"
             @error="onError"
           >
-            <template #upload-button>
-              <div
-                :class="`arco-upload-list-item${
-                  file && file.status === 'error'
-                    ? ' arco-upload-list-item-error'
-                    : ''
-                }`"
-              >
-                <div
-                  v-if="file && file.url"
-                  class="arco-upload-list-picture custom-upload-avatar"
-                >
-                  <img :src="file.url" alt="image" />
-                  <div class="arco-upload-list-picture-mask">
-                    <IconEdit />
-                  </div>
-                  <a-progress
-                    v-if="file.status === 'uploading' && file.percent < 100"
-                    :percent="file.percent"
-                    type="circle"
-                    size="mini"
-                    :style="{
-                      position: 'absolute',
-                      left: '50%',
-                      top: '50%',
-                      transform: 'translateX(-50%) translateY(-50%)'
-                    }"
-                  />
-                </div>
-                <div v-else class="arco-upload-picture-card">
-                  <div class="arco-upload-picture-card-text">
-                    <IconPlus />
-                    <div style="margin-top: 10px; font-weight: 600">Upload</div>
-                  </div>
-                </div>
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+              Drop file here or
+              <em>click to upload</em>
+            </div>
+            <template #tip>
+              <div class="el-upload__tip">
+                jpg/png files with a size less than 500kb
               </div>
             </template>
-          </a-upload>
-        </a-form-item>
-        <a-form-item field="nickName" label="昵称">
-          <a-input
+          </el-upload>
+        </el-form-item>
+        <el-form-item field="nickName" label="昵称">
+          <el-input
             v-model="form.nickName"
             placeholder="请输入昵称"
             allow-clear
           />
-        </a-form-item>
-        <a-form-item field="email" label="邮箱">
-          <a-input
+        </el-form-item>
+        <el-form-item field="email" label="邮箱">
+          <el-input
             v-model="form.email"
             placeholder="请输入邮箱"
             disabled
             allow-clear
           />
-        </a-form-item>
-        <a-form-item field="captcha" label="验证码">
-          <a-input
+        </el-form-item>
+        <el-form-item field="captcha" label="验证码">
+          <el-input
             v-model="form.captcha"
             placeholder="请输入验证码"
             allow-clear
           />
-          <a-button class="ml20" type="primary" @click="handleSendCaptcha">
+          <el-button class="ml20" type="primary" @click="handleSendCaptcha">
             发送验证码
-          </a-button>
-        </a-form-item>
-      </a-form>
+          </el-button>
+        </el-form-item>
+      </el-form>
       <div class="user-profile__main__footer">
-        <a-button type="primary" @click="handleUpdateUserInfo">修改</a-button>
+        <el-button type="primary" @click="handleUpdateUserInfo">修改</el-button>
       </div>
     </div>
   </div>
@@ -89,8 +62,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, reactive } from 'vue'
-import { Message } from '@arco-design/web-vue'
-import type { FileItem } from '@arco-design/web-vue'
+import { ElMessage } from 'element-plus'
 import {
   updateUserInfo,
   updateUserInfoCaptcha,
@@ -112,21 +84,21 @@ const rules = ref({
     {
       required: true,
       message: '请输入昵称',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   email: [
     {
       type: 'email',
       required: true,
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   captcha: [
     {
       required: true,
       message: '请输入验证码',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ]
 })
@@ -149,40 +121,40 @@ onMounted(() => {
 const handleUpdateUserInfo = () => {
   updateUserInfo(form)
     .then((res) => {
-      Message.success(res.data || '修改成功')
+      ElMessage.success(res.data || '修改成功')
     })
     .catch((err) => {
-      Message.error(err.msg || '修改失败')
+      ElMessage.error(err.msg || '修改失败')
     })
 }
 
 const handleSendCaptcha = () => {
   updateUserInfoCaptcha()
     .then(() => {
-      Message.success('验证码发送成功')
+      ElMessage.success('验证码发送成功')
     })
     .catch((err) => {
-      Message.error(err.msg || '验证码发送失败')
+      ElMessage.error(err.msg || '验证码发送失败')
     })
 }
 
-const onChange = (_: any, currentFile: FileItem) => {
+const onChange = (_: any, currentFile: any) => {
   file.value = {
     ...currentFile
   }
 }
-const onProgress = (currentFile: FileItem) => {
+const onProgress = (currentFile: any) => {
   file.value = currentFile
 }
 
-const onSuccess = (FileItem: FileItem) => {
+const onSuccess = (FileItem: any) => {
   form.headPic = FileItem.response.data.path
   store.setHeadPic(form.headPic)
-  Message.success('头像上传成功')
+  ElMessage.success('头像上传成功')
 }
 const onError = () => {
   form.headPic = store.headPic || ''
-  Message.error('头像上传失败')
+  ElMessage.error('头像上传失败')
 }
 </script>
 

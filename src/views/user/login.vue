@@ -4,34 +4,34 @@
       <h1 class="login__main__title">
         {{ `会议室预定系统${isAdmin ? '-管理端' : ''}` }}
       </h1>
-      <a-form
+      <el-form
         ref="formRef"
         class="login__main__form"
         :model="form"
         :rules="rules"
-        auto-label-width
       >
-        <a-form-item field="username" label="用户名">
-          <a-input
+        <el-form-item prop="username" label="用户名">
+          <el-input
             v-model="form.username"
             placeholder="请输入用户名"
             allow-clear
           />
-        </a-form-item>
-        <a-form-item field="password" label="密码">
-          <a-input-password
+        </el-form-item>
+        <el-form-item prop="password" label="密码">
+          <el-input
             v-model="form.password"
+            type="password"
             placeholder="请输入密码"
-            allow-clear
+            show-password
           />
-        </a-form-item>
-      </a-form>
+        </el-form-item>
+      </el-form>
       <div class="login__main__footer">
         <div class="login__main__footer--top">
           <span @click="toResetPwdPage">忘记密码</span>
           <span @click="toRegisterPage">注册</span>
         </div>
-        <a-button type="primary" @click="doLogin">登录</a-button>
+        <el-button type="primary" @click="doLogin">登录</el-button>
       </div>
     </div>
   </div>
@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import type { ValidatedError } from '@arco-design/web-vue'
+import type { FormInstance } from 'element-plus'
 
 import {
   PAGE_URL_REGISTER,
@@ -59,7 +59,7 @@ const isAdmin = route.path === PAGE_URL_ADMIN_LOGIN
 
 localCache.setCache('isAdmin', isAdmin)
 
-const formRef = ref()
+const formRef = ref<FormInstance>()
 const form = ref({
   username: '',
   password: ''
@@ -69,14 +69,14 @@ const rules = ref({
     {
       required: true,
       message: '请输入用户名',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   password: [
     {
       required: true,
       message: '请输入密码',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ]
 })
@@ -96,30 +96,26 @@ onMounted(() => {
 })
 
 const doLogin = () => {
-  formRef.value.validate(
-    (valid: undefined | Record<string, ValidatedError>) => {
-      if (!valid) {
-        login(form.value.username, form.value.password, isAdmin)
-          .then((res) => {
-            message.value.success('登录成功')
-            const data = res.data
-            localCache.setCache('accessToken', data.accessToken)
-            localCache.setCache('refreshToken', data.refreshToken)
-            localCache.setCache('userInfo', data.userInfo)
-            setTimeout(() => {
-              router.push(
-                isAdmin
-                  ? PAGE_URL_ADMIN_MEETING_ROOM_LIST
-                  : PAGE_URL_MEETING_ROOM
-              )
-            }, 1000)
-          })
-          .catch((err) => {
-            message.value.error(err.message || '登录失败')
-          })
-      }
+  formRef.value!.validate((valid) => {
+    if (valid) {
+      login(form.value.username, form.value.password, isAdmin)
+        .then((res) => {
+          message.value.success('登录成功')
+          const data = res.data
+          localCache.setCache('accessToken', data.accessToken)
+          localCache.setCache('refreshToken', data.refreshToken)
+          localCache.setCache('userInfo', data.userInfo)
+          setTimeout(() => {
+            router.push(
+              isAdmin ? PAGE_URL_ADMIN_MEETING_ROOM_LIST : PAGE_URL_MEETING_ROOM
+            )
+          }, 1000)
+        })
+        .catch((err) => {
+          message.value.error(err.message || '登录失败')
+        })
     }
-  )
+  })
 }
 </script>
 

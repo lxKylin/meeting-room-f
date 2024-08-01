@@ -1,15 +1,35 @@
 <template>
   <div class="aside-menu">
-    <a-menu
-      :default-selected-keys="menuList[0].key"
-      :style="{ width: '100%' }"
-      @menu-item-click="onClickMenuItem"
+    <div class="logo">
+      <img src="@/assets/vue.svg" alt="" />
+    </div>
+    <el-menu
+      :default-active="defaultActive"
+      class="pt20"
+      @select="handleSelect"
     >
-      <a-menu-item v-for="menu in menuList" :key="menu.key">
-        <icon-font :type="menu.icon" />
-        {{ menu.title }}
-      </a-menu-item>
-    </a-menu>
+      <div v-for="menu in menuList" :key="menu.path">
+        <!-- <el-submenu v-show="!menu.children" :index="menu.path">
+          <template #title>
+            <span>{{ menu.title }}</span>
+          </template>
+          <el-menu-item
+            v-for="second in menu.children"
+            v-show="!menu.children"
+            :path="second.path"
+            :index="second.path"
+          >
+            <span>{{ second.title }}</span>
+          </el-menu-item>
+        </el-submenu> -->
+        <el-menu-item v-show="menu.children" :index="menu.path">
+          <template #title>
+            <el-icon><component :is="menu.icon" /></el-icon>
+            {{ menu.title }}
+          </template>
+        </el-menu-item>
+      </div>
+    </el-menu>
   </div>
 </template>
 
@@ -19,56 +39,82 @@ import { useRouter } from 'vue-router'
 import localCache from '@/utils/cache'
 
 import * as pageUrl from '@/constant/page-url-constants'
-
-import { IAsideMenu } from '@/types/typing'
-
 const isAdmin = localCache.getCache('isAdmin')
 
-const menuList: IAsideMenu[] = reactive(
+const defaultActive: string = isAdmin
+  ? pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_LIST
+  : pageUrl.PAGE_URL_MEETING_ROOM_LIST
+
+const menuList = reactive(
   [
     {
-      key: pageUrl.PAGE_URL_MEETING_ROOM_LIST,
-      icon: 'icon-list',
+      path: pageUrl.PAGE_URL_MEETING_ROOM_LIST,
+      label: '会议室列表',
       title: '会议室列表',
-      isAdmin: false
+      isAdmin: false,
+      icon: 'Menu',
+      children: []
     },
     {
-      key: pageUrl.PAGE_URL_MEETING_ROOM_HISTORY,
-      icon: 'icon-calendar-clock',
+      path: pageUrl.PAGE_URL_MEETING_ROOM_HISTORY,
+      label: '预定历史',
       title: '预定历史',
-      isAdmin: false
+      isAdmin: false,
+      icon: 'Histogram',
+      children: []
     },
     {
-      key: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_LIST,
-      icon: 'icon-unordered-list',
+      path: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_LIST,
+      label: '会议室管理',
       title: '会议室管理',
-      isAdmin: true
+      isAdmin: true,
+      icon: 'Memo',
+      children: []
     },
     {
-      key: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_BOOK,
-      icon: 'icon-bookmark',
+      path: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_BOOK,
+      label: '预定管理',
       title: '预定管理',
-      isAdmin: true
+      isAdmin: true,
+      icon: 'Notebook',
+      children: []
     },
     {
-      key: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_USER,
-      icon: 'icon-user-group',
+      path: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_USER,
+      label: '用户管理',
       title: '用户管理',
-      isAdmin: true
+      isAdmin: true,
+      icon: 'UserFilled',
+      children: []
     },
     {
-      key: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_STATISTICS,
-      icon: 'icon-apps',
+      path: pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_STATISTICS,
+      label: '统计',
       title: '统计',
-      isAdmin: true
+      isAdmin: true,
+      icon: 'TrendCharts',
+      children: []
     }
   ].filter((item): boolean => item.isAdmin === isAdmin)
 )
 
 const router = useRouter()
-const onClickMenuItem = (key: string) => {
-  router.push(key)
+const handleSelect = (path: string) => {
+  router.push(path)
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.aside-menu {
+  .logo {
+    height: 42px;
+    line-height: 42px;
+    display: flex;
+    justify-content: center;
+    border-right: 1px solid var(--el-menu-border-color);
+  }
+  .el-menu {
+    height: calc(100vh - 42px);
+  }
+}
+</style>

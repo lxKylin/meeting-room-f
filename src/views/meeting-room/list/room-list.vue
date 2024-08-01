@@ -1,13 +1,8 @@
 <template>
-  <div class="room-list">
-    <page-search :search-form-config="searchFormConfig" />
-  </div>
+  <div class="room-list">room-list</div>
 </template>
 
-<script lang="ts" setup>
-import PageSearch from '@/components/page-search.vue'
-import { searchFormConfig } from './config/search.config'
-</script>
+<script lang="ts" setup></script>
 
 <style lang="less" scoped>
 .room-list {

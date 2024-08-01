@@ -2,53 +2,43 @@
   <div class="reset-pwd">
     <div class="reset-pwd__main">
       <h1 class="reset-pwd__main__title">会议室预定系统</h1>
-      <a-form
+      <el-form
         ref="formRef"
         class="reset-pwd__main__form"
         :model="form"
         :rules="rules"
-        auto-label-width
       >
-        <a-form-item field="username" label="用户名">
-          <a-input
-            v-model="form.username"
-            placeholder="请输入用户名"
-            allow-clear
-          />
-        </a-form-item>
-        <a-form-item field="email" label="邮箱">
-          <a-input
-            v-model="form.email"
-            placeholder="请输入邮箱"
-            disabled
-            allow-clear
-          />
-        </a-form-item>
-        <a-form-item field="captcha" label="验证码">
-          <a-input
+        <el-form-item prop="username" label="用户名">
+          <el-input v-model="form.username" placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item prop="email" label="邮箱">
+          <el-input v-model="form.email" placeholder="请输入邮箱" allow-clear />
+        </el-form-item>
+        <el-form-item prop="captcha" label="验证码">
+          <el-input
             v-model="form.captcha"
             placeholder="请输入验证码"
             allow-clear
           />
-          <a-button class="ml20" type="primary">发送验证码</a-button>
-        </a-form-item>
-        <a-form-item field="password" label="新密码">
-          <a-input-password
+          <el-button class="ml20" type="primary">发送验证码</el-button>
+        </el-form-item>
+        <el-form-item prop="password" label="新密码">
+          <el-input
             v-model="form.password"
+            type="password"
             placeholder="请输入密码"
-            allow-clear
           />
-        </a-form-item>
-        <a-form-item field="password2" label="确认密码">
-          <a-input-password
+        </el-form-item>
+        <el-form-item prop="password2" label="确认密码">
+          <el-input
             v-model="form.password2"
+            type="password"
             placeholder="请输入密码"
-            allow-clear
           />
-        </a-form-item>
-      </a-form>
+        </el-form-item>
+      </el-form>
       <div class="reset-pwd__main__footer">
-        <a-button type="primary" @click="resetPwd">修改</a-button>
+        <el-button type="primary" @click="resetPwd">修改</el-button>
       </div>
     </div>
   </div>
@@ -57,8 +47,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { ValidatedError } from '@arco-design/web-vue'
-import { Message } from '@arco-design/web-vue'
+import { ElMessage } from 'element-plus'
 
 import { PAGE_URL_LOGIN } from '@/constant/page-url-constants'
 
@@ -74,72 +63,67 @@ const form = ref<UpdatePassword>({
   password: '',
   password2: ''
 })
-
+const validatorPassword = (_: any, value: any, callback: any) => {
+  if (value !== form.value.password) {
+    callback('两次密码不一致')
+  } else {
+    callback()
+  }
+}
 const rules = ref({
   username: [
     {
       required: true,
       message: '请输入验证码',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   email: [
     {
       type: 'email',
       required: true,
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   captcha: [
     {
       required: true,
       message: '请输入验证码',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   password: [
     {
       required: true,
       message: '请输入密码',
-      validate: 'blur'
+      trigger: 'blur'
     }
   ],
   password2: [
     {
       required: true,
-      message: '请输入密码',
-      validate: 'blur'
-    },
-    {
-      validator: (value: string, cb: any) => {
-        if (value !== form.value.password) {
-          cb('两次密码不一致')
-        } else {
-          cb()
-        }
-      }
+      validator: validatorPassword,
+      trigger: 'blur'
     }
   ]
 })
 
 const router = useRouter()
 const resetPwd = () => {
-  formRef.value.validate(
-    (valid: undefined | Record<string, ValidatedError>) => {
-      if (!valid) {
-        updatePassword(form.value)
-          .then(() => {
-            Message.success('密码修改成功')
-            setTimeout(() => {
-              router.push(PAGE_URL_LOGIN)
-            }, 1000)
-          })
-          .catch((e) => {
-            Message.error(e.msg || '密码修改失败')
-          })
-      }
+  formRef.value.trigger((valid: undefined | Record<string, any>) => {
+    if (!valid) {
+      updatePassword(form.value)
+        .then(() => {
+          ElMessage.success('密码修改成功')
+          setTimeout(() => {
+            router.push(PAGE_URL_LOGIN)
+          }, 1000)
+        })
+        .catch((e) => {
+          ElMessage.error(e.msg || '密码修改失败')
+        })
     }
-  )
+  })
 }
 </script>
 

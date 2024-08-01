@@ -1,6 +1,6 @@
 export interface IAsideMenu {
   key: string
-  icon: string
+  icon: () => void
   title: string
   isAdmin: boolean
 }

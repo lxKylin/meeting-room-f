@@ -10,30 +10,28 @@
         <div class="header__wrapper__menu-item">Contact</div>
       </div>
       <div class="header__wrapper__user">
-        <a-space size="large">
-          <a-avatar
-            class="header__wrapper__user-avatar"
-            :size="32"
-            :image-url="avatarUrl"
-          ></a-avatar>
-        </a-space>
-        <a-dropdown>
-          <a-button class="header__wrapper__user-name" type="text">
-            {{ nickName }}
-          </a-button>
-          <template #content>
-            <a-doption
-              v-for="(doption, index) in doptionList"
-              :key="index"
-              @click="handleDoptionClick(doption.path)"
-            >
-              <template #icon>
-                <icon-font :type="doption.icon" />
-              </template>
-              <template #default>{{ doption.title }}</template>
-            </a-doption>
+        <el-avatar
+          class="header__wrapper__user-avatar"
+          :size="32"
+          :src="avatarUrl"
+        ></el-avatar>
+        <el-dropdown>
+          <div class="header__wrapper__user-name">
+            {{ nickName || 'Kylin' }}
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="(dropTion, index) in dropTionList"
+                :key="index"
+                :icon="dropTion.icon"
+                @click="handleDoptionClick(dropTion.path)"
+              >
+                {{ dropTion.title }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
           </template>
-        </a-dropdown>
+        </el-dropdown>
       </div>
     </header>
   </div>
@@ -66,15 +64,15 @@ onMounted(() => {
   })
 })
 const router = useRouter()
-const doptionList = reactive([
+const dropTionList = reactive([
   {
     path: PAGE_URL_USER_PROFILE,
-    icon: 'icon-user',
+    icon: 'Avatar',
     title: '个人信息'
   },
   {
     path: isAdmin ? PAGE_URL_ADMIN_LOGIN : PAGE_URL_LOGIN,
-    icon: 'icon-export',
+    icon: 'SwitchButton',
     title: '退出登录'
   }
 ])
@@ -112,9 +110,9 @@ const handleDoptionClick = (path: string) => {
     .header__wrapper__user {
       display: flex;
       align-items: center;
+      cursor: pointer;
       .header__wrapper__user-avatar {
         margin: 0 10px;
-        cursor: pointer;
       }
       .header__wrapper__user-name {
         color: #1d2129;
