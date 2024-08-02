@@ -2,8 +2,8 @@
   <div class="user-profile">
     <div class="user-profile__main">
       <h1 class="user-profile__main__title">会议室预定系统个人信息</h1>
-      <el-form :model="form" :rules="rules" auto-label-width>
-        <el-form-item field="headPic" label="头像">
+      <el-form :model="form" :rules="rules">
+        <el-form-item prop="headPic" label="头像">
           <el-upload
             action="/api/upload/picture"
             drag
@@ -27,14 +27,14 @@
             </template>
           </el-upload>
         </el-form-item>
-        <el-form-item field="nickName" label="昵称">
+        <el-form-item prop="nickName" label="昵称">
           <el-input
             v-model="form.nickName"
             placeholder="请输入昵称"
             allow-clear
           />
         </el-form-item>
-        <el-form-item field="email" label="邮箱">
+        <el-form-item prop="email" label="邮箱">
           <el-input
             v-model="form.email"
             placeholder="请输入邮箱"
@@ -42,15 +42,17 @@
             allow-clear
           />
         </el-form-item>
-        <el-form-item field="captcha" label="验证码">
-          <el-input
-            v-model="form.captcha"
-            placeholder="请输入验证码"
-            allow-clear
-          />
-          <el-button class="ml20" type="primary" @click="handleSendCaptcha">
-            发送验证码
-          </el-button>
+        <el-form-item prop="captcha" label="验证码">
+          <div style="display: flex">
+            <el-input
+              v-model="form.captcha"
+              placeholder="请输入验证码"
+              allow-clear
+            />
+            <el-button class="ml20" type="primary" @click="handleSendCaptcha">
+              发送验证码
+            </el-button>
+          </div>
         </el-form-item>
       </el-form>
       <div class="user-profile__main__footer">

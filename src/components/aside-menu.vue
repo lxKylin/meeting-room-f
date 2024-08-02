@@ -34,14 +34,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import localCache from '@/utils/cache'
 
 import * as pageUrl from '@/constant/page-url-constants'
-const isAdmin = localCache.getCache('isAdmin')
+const isAdmin = ref<boolean>(localCache.getCache('userInfo').isAdmin)
 
-const defaultActive: string = isAdmin
+const defaultActive: string = isAdmin.value
   ? pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_LIST
   : pageUrl.PAGE_URL_MEETING_ROOM_LIST
 
@@ -95,7 +95,7 @@ const menuList = reactive(
       icon: 'TrendCharts',
       children: []
     }
-  ].filter((item): boolean => item.isAdmin === isAdmin)
+  ].filter((item): boolean => item.isAdmin === isAdmin.value)
 )
 
 const router = useRouter()

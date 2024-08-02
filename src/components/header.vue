@@ -2,12 +2,7 @@
   <div class="header">
     <header class="header__wrapper">
       <div class="header__wrapper__logo">
-        {{ isAdmin ? '会议室预定系统后台' : '会议室预定系统' }}
-      </div>
-      <div class="header__wrapper__menu">
-        <div class="header__wrapper__menu-item">Home</div>
-        <div class="header__wrapper__menu-item">About</div>
-        <div class="header__wrapper__menu-item">Contact</div>
+        {{ '会议室预定系统' }}
       </div>
       <div class="header__wrapper__user">
         <el-avatar
@@ -45,14 +40,11 @@ import localCache from '@/utils/cache'
 import { useStore } from '@/store'
 import {
   PAGE_URL_USER_PROFILE,
-  PAGE_URL_LOGIN,
-  PAGE_URL_ADMIN_LOGIN
+  PAGE_URL_LOGIN
 } from '@/constant/page-url-constants'
 import { getUserInfo } from '@/services/user-service'
 
 const store = useStore()
-
-const isAdmin = localCache.getCache('isAdmin')
 
 const nickName = ref<string>('')
 const avatarUrl = ref<string>('')
@@ -71,7 +63,7 @@ const dropTionList = reactive([
     title: '个人信息'
   },
   {
-    path: isAdmin ? PAGE_URL_ADMIN_LOGIN : PAGE_URL_LOGIN,
+    path: PAGE_URL_LOGIN,
     icon: 'SwitchButton',
     title: '退出登录'
   }

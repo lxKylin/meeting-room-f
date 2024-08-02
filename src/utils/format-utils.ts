@@ -32,7 +32,3 @@ export function formatWeek(date: Dayjs) {
       .format('YYYY-MM-DD')}`
   }
 }
-
-export function formatMembers(members: any[] = []) {
-  return members.map((item) => item.name).join(',')
-}

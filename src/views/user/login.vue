@@ -2,19 +2,20 @@
   <div class="login">
     <div class="login__main">
       <h1 class="login__main__title">
-        {{ `会议室预定系统${isAdmin ? '-管理端' : ''}` }}
+        {{ `会议室预定系统` }}
       </h1>
       <el-form
         ref="formRef"
         class="login__main__form"
         :model="form"
         :rules="rules"
+        label-width="auto"
       >
         <el-form-item prop="username" label="用户名">
           <el-input
             v-model="form.username"
             placeholder="请输入用户名"
-            allow-clear
+            clearable
           />
         </el-form-item>
         <el-form-item prop="password" label="密码">
@@ -31,7 +32,9 @@
           <span @click="toResetPwdPage">忘记密码</span>
           <span @click="toRegisterPage">注册</span>
         </div>
-        <el-button type="primary" @click="doLogin">登录</el-button>
+        <el-button type="primary" @click="doLogin" style="width: 100%">
+          登录
+        </el-button>
       </div>
     </div>
   </div>
@@ -39,25 +42,19 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, getCurrentInstance } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
 
 import {
   PAGE_URL_REGISTER,
   PAGE_URL_RESET_PASSWORD,
   PAGE_URL_MEETING_ROOM,
-  PAGE_URL_ADMIN_MEETING_ROOM_LIST,
-  PAGE_URL_ADMIN_LOGIN
+  PAGE_URL_ADMIN_MEETING_ROOM_LIST
 } from '@/constant/page-url-constants'
 import { login } from '@/services/user-service'
 import localCache from '@/utils/cache'
 
 const router = useRouter()
-const route = useRoute()
-
-const isAdmin = route.path === PAGE_URL_ADMIN_LOGIN
-
-localCache.setCache('isAdmin', isAdmin)
 
 const formRef = ref<FormInstance>()
 const form = ref({
@@ -98,7 +95,7 @@ onMounted(() => {
 const doLogin = () => {
   formRef.value!.validate((valid) => {
     if (valid) {
-      login(form.value.username, form.value.password, isAdmin)
+      login(form.value.username, form.value.password)
         .then((res) => {
           message.value.success('登录成功')
           const data = res.data
@@ -107,12 +104,14 @@ const doLogin = () => {
           localCache.setCache('userInfo', data.userInfo)
           setTimeout(() => {
             router.push(
-              isAdmin ? PAGE_URL_ADMIN_MEETING_ROOM_LIST : PAGE_URL_MEETING_ROOM
+              data.userInfo.isAdmin
+                ? PAGE_URL_ADMIN_MEETING_ROOM_LIST
+                : PAGE_URL_MEETING_ROOM
             )
           }, 1000)
         })
         .catch((err) => {
-          message.value.error(err.message || '登录失败')
+          message.value.error(err.msg || '登录失败')
         })
     }
   })
@@ -145,9 +144,6 @@ const doLogin = () => {
           color: #1890ff;
           cursor: pointer;
         }
-      }
-      .arco-btn {
-        width: 100%;
       }
     }
   }

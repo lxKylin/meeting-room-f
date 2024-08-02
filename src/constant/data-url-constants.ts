@@ -1,7 +1,6 @@
 export const API_BASE = '/api'
 
 export const DATA_URL_LOGIN = `${API_BASE}/user/login`
-export const DATA_URL_ADMIN_LOGIN = `${API_BASE}/user/admin/login`
 export const DATA_URL_REGISTER = `${API_BASE}/user/register`
 export const DATA_URL_UPDATE_PASSWORD = `${API_BASE}/user/update_password`
 export const DATA_URL_GET_USER_INFO = `${API_BASE}/user/userInfo`
