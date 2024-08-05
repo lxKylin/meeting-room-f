@@ -2,7 +2,7 @@
   <div class="user-profile">
     <div class="user-profile__main">
       <h1 class="user-profile__main__title">会议室预定系统个人信息</h1>
-      <el-form :model="form" :rules="rules">
+      <el-form :model="form" :rules="rules" label-width="auto">
         <el-form-item prop="headPic" label="头像">
           <el-upload
             action="/api/upload/picture"
@@ -43,7 +43,7 @@
           />
         </el-form-item>
         <el-form-item prop="captcha" label="验证码">
-          <div style="display: flex">
+          <div class="flex">
             <el-input
               v-model="form.captcha"
               placeholder="请输入验证码"
@@ -56,7 +56,13 @@
         </el-form-item>
       </el-form>
       <div class="user-profile__main__footer">
-        <el-button type="primary" @click="handleUpdateUserInfo">修改</el-button>
+        <el-button
+          type="primary"
+          @click="handleUpdateUserInfo"
+          style="width: 100%"
+        >
+          修改
+        </el-button>
       </div>
     </div>
   </div>

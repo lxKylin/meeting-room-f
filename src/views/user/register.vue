@@ -7,6 +7,7 @@
         class="register__main__form"
         :model="form"
         :rules="rules"
+        label-width="auto"
       >
         <el-form-item prop="username" label="用户名">
           <el-input
@@ -36,29 +37,33 @@
           <el-input v-model="form.email" placeholder="请输入邮箱" allow-clear />
         </el-form-item>
         <el-form-item prop="captcha" label="验证码">
-          <el-input
-            v-model="form.captcha"
-            placeholder="请输入验证码"
-            allow-clear
-          />
-          <el-button
-            v-if="!sms.disabled"
-            class="ml20"
-            type="primary"
-            @click="sendCode"
-          >
-            发送验证码
-          </el-button>
-          <el-button v-else class="ml20" type="secondary" disabled>
-            {{ sms.count }} 秒后重新发送
-          </el-button>
+          <div class="flex">
+            <el-input
+              v-model="form.captcha"
+              placeholder="请输入验证码"
+              allow-clear
+            />
+            <el-button
+              v-if="!sms.disabled"
+              class="ml20"
+              type="primary"
+              @click="sendCode"
+            >
+              发送验证码
+            </el-button>
+            <el-button v-else class="ml20" type="secondary" disabled>
+              {{ sms.count }} 秒后重新发送
+            </el-button>
+          </div>
         </el-form-item>
       </el-form>
       <div class="register__main__footer">
         <div class="register__main__footer--top">
           <span @click="toLoginPage">已有账号？去登录</span>
         </div>
-        <el-button type="primary" @click="userRegister">注册</el-button>
+        <el-button type="primary" @click="userRegister" style="width: 100%">
+          注册
+        </el-button>
       </div>
     </div>
   </div>
