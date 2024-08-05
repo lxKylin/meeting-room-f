@@ -20,11 +20,12 @@ import {
  * @param password
  * @returns
  */
-export const login = (username: string, password: string) => {
+export const login = (username: string, password: string, code: string) => {
   // 表示请求的响应数据的类型是 any，而服务器的响应类型是 ServerResponse。
   return request.post<any, ServerResponse>(DATA_URL_LOGIN, {
     username,
-    password
+    password,
+    code
   })
 }
 

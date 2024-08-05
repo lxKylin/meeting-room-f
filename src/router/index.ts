@@ -98,14 +98,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/user/login.vue')
   },
   {
-    path: PAGE_URL.PAGE_URL_ADMIN_LOGIN,
-    name: PAGE_URL.PAGE_URL_ADMIN_LOGIN,
-    meta: {
-      title: '管理员登录'
-    },
-    component: () => import('@/views/user/login.vue')
-  },
-  {
     path: PAGE_URL.PAGE_URL_REGISTER,
     name: PAGE_URL.PAGE_URL_REGISTER,
     meta: {

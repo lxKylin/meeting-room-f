@@ -26,6 +26,20 @@
             show-password
           />
         </el-form-item>
+        <el-form-item prop="code" label="验证码">
+          <div class="flex">
+            <el-input v-model="form.code" placeholder="请输入验证码" />
+            <div>
+              <img
+                class="ml20"
+                style="width: 100px; height: 40px"
+                :src="codeUrl"
+                alt=""
+                @click="setCodeUrl"
+              />
+            </div>
+          </div>
+        </el-form-item>
       </el-form>
       <div class="login__main__footer">
         <div class="login__main__footer--top">
@@ -51,6 +65,7 @@ import {
   PAGE_URL_MEETING_ROOM,
   PAGE_URL_ADMIN_MEETING_ROOM_LIST
 } from '@/constant/page-url-constants'
+import { DATA_URL_CAPTCHA_SVG } from '@/constant/data-url-constants'
 import { login } from '@/services/user-service'
 import localCache from '@/utils/cache'
 
@@ -59,7 +74,8 @@ const router = useRouter()
 const formRef = ref<FormInstance>()
 const form = ref({
   username: '',
-  password: ''
+  password: '',
+  code: ''
 })
 const rules = ref({
   username: [
@@ -73,6 +89,13 @@ const rules = ref({
     {
       required: true,
       message: '请输入密码',
+      trigger: 'blur'
+    }
+  ],
+  code: [
+    {
+      required: true,
+      message: '请输入验证码',
       trigger: 'blur'
     }
   ]
@@ -95,7 +118,7 @@ onMounted(() => {
 const doLogin = () => {
   formRef.value!.validate((valid) => {
     if (valid) {
-      login(form.value.username, form.value.password)
+      login(form.value.username, form.value.password, form.value.code)
         .then((res) => {
           message.value.success('登录成功')
           const data = res.data
@@ -111,11 +134,20 @@ const doLogin = () => {
           }, 1000)
         })
         .catch((err) => {
+          setCodeUrl()
           message.value.error(err.msg || '登录失败')
         })
     }
   })
 }
+
+let codeUrl = ref<any>('')
+const setCodeUrl = () => {
+  codeUrl.value = `${DATA_URL_CAPTCHA_SVG}?.=${Math.random()}`
+}
+onMounted(() => {
+  setCodeUrl()
+})
 </script>
 
 <style lang="less" scoped>
