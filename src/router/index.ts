@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 import * as PAGE_URL from '@/constant/page-url-constants'
+import localCache from '@/utils/cache'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -125,6 +126,16 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach((to, _, next) => {
+  if (to.path !== PAGE_URL.PAGE_URL_LOGIN) {
+    localCache.getCache('userInfo')
+      ? next()
+      : next({ path: PAGE_URL.PAGE_URL_LOGIN })
+  } else {
+    next()
+  }
 })
 
 router.afterEach((to) => {
