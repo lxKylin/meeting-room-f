@@ -113,7 +113,6 @@ const routes: RouteRecordRaw[] = [
     },
     component: () => import('@/views/user/reset-pwd.vue')
   },
-
   {
     path: '/:pathMatch(.*)*',
     meta: {

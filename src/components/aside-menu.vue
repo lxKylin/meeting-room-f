@@ -34,16 +34,18 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { reactive, ref, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import localCache from '@/utils/cache'
 
 import * as pageUrl from '@/constant/page-url-constants'
-const isAdmin = ref<boolean>(localCache.getCache('userInfo').isAdmin)
+const isAdmin = ref<boolean>(localCache.getCache('userInfo')?.isAdmin || false)
 
-const defaultActive: string = isAdmin.value
-  ? pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_LIST
-  : pageUrl.PAGE_URL_MEETING_ROOM_LIST
+let defaultActive = ref(
+  isAdmin.value
+    ? pageUrl.PAGE_URL_ADMIN_MEETING_ROOM_LIST
+    : pageUrl.PAGE_URL_MEETING_ROOM_LIST
+)
 
 const menuList = reactive(
   [
@@ -99,7 +101,13 @@ const menuList = reactive(
 )
 
 const router = useRouter()
+const route = useRoute()
+
+watch(route, (val) => {
+  defaultActive.value = val.path
+})
 const handleSelect = (path: string) => {
+  defaultActive.value = path
   router.push(path)
 }
 </script>
