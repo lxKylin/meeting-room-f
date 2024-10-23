@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { message } from 'ant-design-vue'
+import { ElMessage } from 'element-plus'
 import localCache from '@/utils/cache'
 import ServerResponse from '@/types/server-response'
 import { refreshToken } from '@/services/user-service'
@@ -76,11 +76,13 @@ request.interceptors.response.use(
         return Promise.all([...requestSet]) // 当前接口重新发起请求
       } else {
         inRefreshing = false
-        message.error('登录过期，请重新登录')
+        ElMessage.error('登录过期，请重新登录')
 
         setTimeout(() => {
           window.location.href = '/login'
         }, 1000)
+
+        return Promise.reject(res.data)
       }
     } else {
       return Promise.reject(data)
