@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path' //这个path用到了上面安装的@types/node
+
+// 按需导入
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 const resolve = (dir: string) => path.join(__dirname, dir)
 
 const fePort = 1118
@@ -8,7 +13,15 @@ const serverOrigin = 'http://localhost:1231'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    })
+  ],
   //这里进行配置别名
   resolve: {
     alias: {
