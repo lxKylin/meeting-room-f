@@ -13,12 +13,13 @@ import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import { createPinia } from 'pinia'
+import type { Pinia } from 'pinia'
 
 import router from './router'
 
 import CrmTable from '@/components/crm-table.vue'
 
-const store = createPinia()
+const store: Pinia = createPinia()
 
 const app = createApp(App)
 

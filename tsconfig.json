@@ -22,7 +22,7 @@
 
     "baseUrl": ".", //查询的基础路径
     "paths": { "@/*": ["src/*"], "#/*": ["types/*"] }, //路径映射,配合别名使用
-    "types": ["node", "ant-design-vue"]
+    "types": ["node", "ant-design-vue", "element-plus/global"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
