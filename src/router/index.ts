@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 import * as PAGE_URL from '@/constant/page-url-constants'
 import localCache from '@/utils/cache'
+
+// 配置css动画类型与速度
+NProgress.configure({ ease: 'linear', speed: 500 })
 
 const routes: RouteRecordRaw[] = [
   {
@@ -128,6 +133,11 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((_, __, next) => {
+  NProgress.start()
+  next()
+})
+
 router.beforeEach((to, _, next) => {
   if (to.path !== PAGE_URL.PAGE_URL_LOGIN) {
     localCache.getCache('userInfo')
@@ -146,6 +156,9 @@ router.afterEach((to) => {
     titleNode.textContent = title.toString()
   }
 })
-// 路由守卫
+
+router.afterEach(() => {
+  NProgress.done()
+})
 
 export default router
