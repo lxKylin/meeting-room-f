@@ -1,16 +1,16 @@
 <template>
-  <a-config-provider :locale="locale">
+  <el-config-provider :locale="zhCn">
     <router-view />
-  </a-config-provider>
+  </el-config-provider>
 </template>
 
 <script lang="ts" setup>
-import zhCN from 'ant-design-vue/es/locale/zh_CN'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-cn'
-dayjs.locale('zh-cn')
+// 全局配置国际化
+import { ElConfigProvider } from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
-const locale = zhCN
+// 日期和时间本地化
+import 'dayjs/locale/zh-cn'
 </script>
 <style lang="less">
 #app {
