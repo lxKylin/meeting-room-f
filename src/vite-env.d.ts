@@ -6,3 +6,5 @@ declare module '*.vue' {
   export default component
 }
 declare module 'nprogress'
+declare module 'crypto-js'
+declare module 'md5'

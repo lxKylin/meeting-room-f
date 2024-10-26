@@ -46,8 +46,13 @@
           <span @click="toResetPwdPage">忘记密码</span>
           <span @click="toRegisterPage">注册</span>
         </div>
-        <el-button type="primary" @click="doLogin" style="width: 100%">
-          登录
+        <el-button
+          type="primary"
+          @click="doLogin"
+          :disabled="loading"
+          style="width: 100%"
+        >
+          {{ loading ? '登录中...' : '登录' }}
         </el-button>
       </div>
     </div>
@@ -58,6 +63,7 @@
 import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
+import md5 from 'md5'
 
 import {
   PAGE_URL_REGISTER,
@@ -67,7 +73,9 @@ import {
 } from '@/constant/page-url-constants'
 import { DATA_URL_CAPTCHA_SVG } from '@/constant/data-url-constants'
 import { login } from '@/services/user-service'
-import localCache from '@/utils/cache'
+
+import { saveProfile } from '@/utils/save-profile'
+import { AESUtil } from '@/utils/aes-utils'
 
 const router = useRouter()
 
@@ -115,16 +123,30 @@ onMounted(() => {
     getCurrentInstance()?.appContext.config.globalProperties.$message
 })
 
+let loading = ref<boolean>(false)
+// 登录逻辑
 const doLogin = () => {
   formRef.value!.validate((valid) => {
     if (valid) {
-      login(form.value.username, form.value.password, form.value.code)
-        .then((res) => {
+      // 转换成json字符串
+      const plaintText = JSON.stringify({
+        username: form.value.username,
+        password: md5(form.value.password),
+        timestamp: new Date().getTime()
+      })
+      // 加密
+      const aesPassword = AESUtil.encrypt(plaintText)
+
+      login(form.value.username, aesPassword, form.value.code)
+        .then(({ data }) => {
+          loading.value = true
           message.value.success('登录成功')
-          const data = res.data
-          localCache.setCache('accessToken', data.accessToken)
-          localCache.setCache('refreshToken', data.refreshToken)
-          localCache.setCache('userInfo', data.userInfo)
+          saveProfile(data)
+          // localCache.setCache('accessToken', data.accessToken)
+          // localCache.setCache('refreshToken', data.refreshToken)
+          // localCache.setCache('userInfo', data.userInfo)
+
+          // TODO
           setTimeout(() => {
             router.push(
               data.userInfo.isAdmin
@@ -136,6 +158,9 @@ const doLogin = () => {
         .catch((err) => {
           setCodeUrl()
           message.value.error(err.msg || '登录失败')
+        })
+        .finally(() => {
+          loading.value = false
         })
     }
   })
