@@ -4,6 +4,8 @@ import localCache from '@/utils/cache'
 import ServerResponse from '@/types/server-response'
 import { refreshToken } from '@/services/user-service'
 
+import { saveProfile } from '@/utils/save-profile'
+
 const request = axios.create()
 
 // request interceptor
@@ -59,8 +61,7 @@ request.interceptors.response.use(
       const res: ServerResponse = await refreshToken(refresh_token)
 
       if (res.status === 200) {
-        localCache.setCache('accessToken', res.data.access_token || '')
-        localCache.setCache('refreshToken', res.data.refresh_token || '')
+        saveProfile(res.data)
         inRefreshing = false
 
         // 声明一个Set来存储等待的请求

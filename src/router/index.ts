@@ -2,9 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { ElMessage } from 'element-plus'
 
 import * as PAGE_URL from '@/constant/page-url-constants'
 import localCache from '@/utils/cache'
+
+import { isLogin } from '@/services/user-service'
 
 // 配置css动画类型与速度
 NProgress.configure({ ease: 'linear', speed: 500 })
@@ -139,10 +142,16 @@ router.beforeEach((_, __, next) => {
 })
 
 router.beforeEach((to, _, next) => {
-  if (to.path !== PAGE_URL.PAGE_URL_LOGIN) {
-    localCache.getCache('userInfo')
-      ? next()
-      : next({ path: PAGE_URL.PAGE_URL_LOGIN })
+  if (
+    ![PAGE_URL.PAGE_URL_LOGIN, PAGE_URL.PAGE_URL_REGISTER].includes(to.path)
+  ) {
+    const token = localCache.getCache('accessToken')
+    token &&
+      isLogin(token).then((res) => {
+        ElMessage.error('登录状态已过期，请重新登录')
+        localCache.clearCache()
+        res.data.isLogin ? next() : next({ path: PAGE_URL.PAGE_URL_LOGIN })
+      })
   } else {
     next()
   }

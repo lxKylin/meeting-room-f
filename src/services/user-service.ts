@@ -3,6 +3,7 @@ import ServerResponse from '@/types/server-response'
 import type { Register, UpdatePassword } from '@/types/user.type'
 
 import {
+  DATA_URL_IS_LOGIN,
   DATA_URL_LOGIN,
   DATA_URL_REGISTER,
   DATA_URL_REGISTER_CAPTCHA,
@@ -13,6 +14,17 @@ import {
   DATA_URL_UPDATE_USER_INFO,
   DATA_URL_USER_LIST
 } from '@/constant/data-url-constants'
+
+/**
+ * token是否有效
+ * @param token
+ * @returns
+ */
+export const isLogin = (token: string) => {
+  return request.get<any, ServerResponse>(DATA_URL_IS_LOGIN, {
+    params: { token }
+  })
+}
 
 /**
  * 登录
