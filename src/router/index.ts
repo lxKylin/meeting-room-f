@@ -148,9 +148,13 @@ router.beforeEach((to, _, next) => {
     const token = localCache.getCache('accessToken')
     token &&
       isLogin(token).then((res) => {
-        ElMessage.error('登录状态已过期，请重新登录')
-        localCache.clearCache()
-        res.data.isLogin ? next() : next({ path: PAGE_URL.PAGE_URL_LOGIN })
+        if (res.data.isLogin) {
+          next()
+        } else {
+          ElMessage.error('登录状态已过期，请重新登录')
+          localCache.clearCache()
+          next({ path: PAGE_URL.PAGE_URL_LOGIN })
+        }
       })
   } else {
     next()
