@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { ElMessage } from 'element-plus'
+import { addBreadcrumb } from '@sentry/vue'
 
 import * as PAGE_URL from '@/constant/page-url-constants'
 import localCache from '@/utils/cache'
@@ -141,10 +142,23 @@ router.beforeEach((_, __, next) => {
   next()
 })
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, from, next) => {
   if (
     ![PAGE_URL.PAGE_URL_LOGIN, PAGE_URL.PAGE_URL_REGISTER].includes(to.path)
   ) {
+    const toTitle = to.meta.title || to.name || to.fullPath
+    const fromTitle =
+      from.meta?.title || from.name || from.fullPath || '(无来源)'
+
+    addBreadcrumb({
+      category: 'navigation',
+      message: `从【${fromTitle}】进入【${toTitle}】`,
+      data: {
+        from: from.fullPath,
+        to: to.fullPath
+      }
+    })
+
     const token = localCache.getCache('accessToken')
     token &&
       isLogin(token).then((res) => {
